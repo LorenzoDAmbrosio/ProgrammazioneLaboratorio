@@ -88,6 +88,15 @@ void Chat::sendMessage(Message* message) {
     messages.push_back(message);
     notify();
 }
+void Chat::sendMessage(User* sender,std::string content) {
+    Message* message=new Message(sender,content);
+    if(!sender->equals(firstUser) && !sender->equals(secondUser))
+        throw std::runtime_error("User not in chat!");
+
+    message->prepareToSend();
+    messages.push_back(message);
+    notify();
+}
 
 const std::list<Message *> &Chat::getMessages() const {
     return messages;

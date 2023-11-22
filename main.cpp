@@ -45,9 +45,9 @@ int main() {
     std::cout<< std::endl;
 
     // Sending Messages between Marco and Alice
-    secondChat->sendMessage(new Message(MainUser,"Hello Alice!"));
-    secondChat->sendMessage(new Message(thirdUser,"Hi Mark"));
-    secondChat->sendMessage(new Message(thirdUser,"How are you doing?"));
+    secondChat->sendMessage(MainUser,"Hello Alice!");
+    secondChat->sendMessage(thirdUser,"Hi Mark");
+    secondChat->sendMessage(thirdUser,"How are you doing?");
     std::cout<< std::endl;
 
     // showing resume of the chat

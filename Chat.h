@@ -31,6 +31,7 @@ public:
     const std::list<Observer*>& getObservers() const;
 
     void sendMessage(Message* message);
+    void sendMessage(User* sender,std::string content);
 
     const std::list<Message*>& getMessages() const;
 
