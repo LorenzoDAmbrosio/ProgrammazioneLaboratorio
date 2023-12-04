@@ -7,7 +7,7 @@
 
 // Costruttore della classe Chat
 Chat::Chat(User* fUser,User* sUser)
-: firstUser(fUser), secondUser(sUser),isOpen(false),totalMessages(0)
+: firstUser(fUser), secondUser(sUser)
 {
     attach(fUser);
     attach(sUser);
@@ -42,6 +42,10 @@ void Chat::notify() {
 }
 
 void Chat::showMessages(){
+    if(messages.empty()){
+        throw std::runtime_error("No messages to Display!");
+    }
+
     std::cout << toString(false) << "@@@@@@@@@@@@@@@@@@@@@@@@";
     Message* latest = nullptr;
     for (auto message : messages) {
@@ -72,6 +76,11 @@ std::string Chat::toString(bool tabulation) const {
     + " \t [no." + std::to_string(getTotalMessages()) + "]";
 }
 
+bool Chat::userIn(User* user) const{
+    return this->getFirstUser()->equals(user)
+    || this->getSecondUser()->equals(user);
+}
+
 Chat::~Chat() {
     detach(firstUser);
     detach(secondUser);
@@ -91,7 +100,7 @@ void Chat::sendMessage(Message* message) {
 void Chat::sendMessage(User* sender,std::string content) {
     Message* message=new Message(sender,content);
     if(!sender->equals(firstUser) && !sender->equals(secondUser))
-        throw std::runtime_error("User not in chat!");
+        throw std::runtime_error("User not part of the chat!");
 
     message->prepareToSend();
     messages.push_back(message);
@@ -100,4 +109,12 @@ void Chat::sendMessage(User* sender,std::string content) {
 
 const std::list<Message *> &Chat::getMessages() const {
     return messages;
+}
+
+Message * Chat::getLatestMessage(){
+    Message* lastMessage=messages.back();
+    if(lastMessage == nullptr){
+        throw std::runtime_error("No messages sent yet");
+    }
+    return lastMessage;
 }

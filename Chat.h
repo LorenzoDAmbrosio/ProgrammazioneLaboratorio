@@ -17,8 +17,6 @@ private:
     User* secondUser;
     std::list<Message*> messages;
     std::list<Observer*> observers;
-    int totalMessages;
-    bool isOpen;
 
 public:
     // Costruttore
@@ -51,6 +49,9 @@ public:
     // Distruttore
     ~Chat();
 
+    bool userIn(User *user) const;
+
+    Message * getLatestMessage();
 };
 
 #endif //PROGRAMMAZIONELABORATORIO_CHAT_H
