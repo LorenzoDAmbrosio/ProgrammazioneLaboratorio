@@ -10,8 +10,8 @@ TEST(Chat, showMessages) {
     auto* us2=new User("Bob");
     auto* us3=new User("Test");
 
-    auto* msg1=new Message(us1,"test");
-    auto* msg2=new Message(us3,"test exception");
+    Message msg1(us1,"test");
+    Message msg2(us3,"test exception");
 
     Chat* chat=new Chat(us1,us2);
 
@@ -32,7 +32,7 @@ TEST(Chat, SendMessage) {
     auto* us1=new User("Alice");
     auto* us2=new User("Bob");
 
-    auto* msg1=new Message(us1,"test");
+    Message msg1(us1,"test");
 
 
     Chat* chat=new Chat(us1,us2);
@@ -40,8 +40,8 @@ TEST(Chat, SendMessage) {
 
     ASSERT_NO_THROW(chat->sendMessage(msg1));
     ASSERT_EQ(1,chat->getTotalMessages());
-    Message* latestMsg=chat->getMessages().back();
+    Message latestMsg=chat->getMessages().back();
     ASSERT_EQ(msg1,latestMsg);
-    ASSERT_EQ(us1,latestMsg->getSender());
-    ASSERT_NE(us2,latestMsg->getSender());
+    ASSERT_EQ(us1,latestMsg.getSender());
+    ASSERT_NE(us2,latestMsg.getSender());
 }

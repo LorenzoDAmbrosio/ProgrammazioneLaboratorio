@@ -41,19 +41,20 @@ void Chat::notify() {
     }
 }
 
-void Chat::showMessages(){
+void Chat::showMessages() const{
     if(messages.empty()){
         throw std::runtime_error("No messages to Display!");
     }
 
     std::cout << toString(false) << "@@@@@@@@@@@@@@@@@@@@@@@@";
-    Message* latest = nullptr;
+    Message* last = nullptr;
     for (auto message : messages) {
-        bool differentToLatest=!message->sameSender(latest);
+        bool differentToLatest=!message.sameSender(last);
         if(differentToLatest)
             std::cout<< std::endl;
-        std::cout << message->toString(differentToLatest);
-        latest=message;
+        std::cout << message.toString(differentToLatest);
+        message.setAsRead();
+        last=&message;
     }
     std::cout<< std::endl <<"@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"<< std::endl;
 }
@@ -63,8 +64,6 @@ int Chat::getTotalMessages() const {
 }
 
 bool Chat::equals(const Chat &other) const {
-    if (&other == nullptr)
-        return false;
     return this->firstUser->equals(other.getFirstUser()) &&
            this->secondUser->equals(other.getSecondUser());
 }
@@ -76,9 +75,9 @@ std::string Chat::toString(bool tabulation) const {
     + " \t [no." + std::to_string(getTotalMessages()) + "]";
 }
 
-bool Chat::userIn(User* user) const{
-    return this->getFirstUser()->equals(user)
-    || this->getSecondUser()->equals(user);
+bool Chat::userIn(const User& user) const{
+    return user.equals(this->getFirstUser())
+    || user.equals(this->getSecondUser());
 }
 
 Chat::~Chat() {
@@ -88,33 +87,38 @@ Chat::~Chat() {
 }
 
 
-void Chat::sendMessage(Message* message) {
-    auto sender=message->getSender();
+void Chat::sendMessage(Message message){
+    auto sender=message.getSender();
     if(!sender->equals(firstUser) && !sender->equals(secondUser))
         throw std::runtime_error("User not in chat!");
 
-    message->prepareToSend();
+    message.prepareToSend();
     messages.push_back(message);
     notify();
 }
-void Chat::sendMessage(User* sender,std::string content) {
-    Message* message=new Message(sender,content);
-    if(!sender->equals(firstUser) && !sender->equals(secondUser))
-        throw std::runtime_error("User not part of the chat!");
-
-    message->prepareToSend();
-    messages.push_back(message);
-    notify();
+void Chat::sendMessage(User* sender,const std::string &content){
+    Message message(sender,content);
+    sendMessage(message);
 }
 
-const std::list<Message *> &Chat::getMessages() const {
+const std::list<Message> &Chat::getMessages() const {
     return messages;
 }
 
-Message * Chat::getLatestMessage(){
-    Message* lastMessage=messages.back();
-    if(lastMessage == nullptr){
+Message Chat::getLastMessage() const{
+    if(getTotalMessages()==0){
         throw std::runtime_error("No messages sent yet");
     }
+
+    Message lastMessage=messages.back();
+
     return lastMessage;
+}
+
+int Chat::getReadMessages() const {
+    int count=0;
+    for (auto message : messages) {
+        count += message.getWasRead();
+    }
+    return count;
 }

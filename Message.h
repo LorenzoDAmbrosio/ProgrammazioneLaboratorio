@@ -14,26 +14,36 @@ class Message {
         std::string content;
         std::string sendDate;
         User* sender;
+        bool WasRead = false;
     public:
-        explicit Message(User* sender,const std::string &content);
+
+        Message(User* sender,const std::string &content);
 
         //GETTER Content Method :
         // returns the value of property Content
-        std::string getContent();
+        std::string getContent() const;
         //SETTER Content Method :
         // sets the property Content
         void setContent(const std::string &c);
 
         //GETTER Sender Method :
         // returns the value of property Sender
-        User* getSender();
+        User* getSender() const;
         //SETTER Sender Method :
         // sets the property Sender
         void setSender(User* s);
-        std::string toString(bool showHeader);
-        bool sameSender(Message* other);
 
-    void prepareToSend();
+        //GETTER Sender Method :
+        // returns the value of property Sender
+        bool getWasRead() const;
+        //SETTER Sender Method :
+        // sets the value of the property WasRead as true
+        void setAsRead();
+
+        std::string toString(bool showHeader) const;
+        bool sameSender(Message* other) const;
+
+        void prepareToSend();
 };
 
 

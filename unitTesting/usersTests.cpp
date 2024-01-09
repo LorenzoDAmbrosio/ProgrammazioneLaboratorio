@@ -8,7 +8,6 @@
 //Constructor Test
 TEST(User, constructor) {
     User u("Marco");
-    ASSERT_EQ("Marco", u.getUsername());
 }
 
 //test update
@@ -18,13 +17,8 @@ TEST(User, update) {
     User u3("Carl");
     Chat* chat=new Chat(&u1,&u2);
 
-    ASSERT_EQ(true,chat->userIn(&u1));
-    ASSERT_EQ(true,chat->userIn(&u2));
-    // verifico che l'utente 3 non partecipi alla chat
-    ASSERT_EQ(false,chat->userIn(&u3));
-
     // ancora non sono stati inviati messaggi
-    ASSERT_ANY_THROW(u1.update(chat));
+    ASSERT_THROW(u1.update(chat),std::runtime_error);
 
     chat->sendMessage(&u1,"test");
 

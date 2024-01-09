@@ -15,7 +15,7 @@ class Chat : public Subject {
 private:
     User* firstUser;
     User* secondUser;
-    std::list<Message*> messages;
+    std::list<Message> messages;
     std::list<Observer*> observers;
 
 public:
@@ -28,14 +28,16 @@ public:
 
     const std::list<Observer*>& getObservers() const;
 
-    void sendMessage(Message* message);
-    void sendMessage(User* sender,std::string content);
+    void sendMessage(Message message);
+    void sendMessage(User* sender,const std::string &content);
 
-    const std::list<Message*>& getMessages() const;
+    const std::list<Message>& getMessages() const;
 
-    void showMessages();
+    void showMessages() const;
 
     int getTotalMessages() const;
+    int getReadMessages() const;
+
 
     // Override dei metodi del pattern Observer
     void attach(Observer* o) override;
@@ -46,12 +48,13 @@ public:
 
     std::string toString(bool tabulation) const;
 
+    bool userIn(const User &user) const;
+
+    // returns the last message sent
+    Message getLastMessage() const;
     // Distruttore
     ~Chat();
 
-    bool userIn(User *user) const;
-
-    Message * getLatestMessage();
 };
 
 #endif //PROGRAMMAZIONELABORATORIO_CHAT_H

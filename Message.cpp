@@ -10,22 +10,31 @@ Message::Message(User* sender,const std::string &content)
     sendDate = "undefined";
 }
 
-std::string Message::getContent() {
+std::string Message::getContent() const{
     return content;
 }
 
-void Message::setContent(const std::string &c) {
+void Message::setContent(const std::string &c){
     content=c;
 }
-User* Message::getSender() {
+User* Message::getSender() const{
     return sender;
 }
 
-void Message::setSender(User* s) {
+void Message::setSender(User* s){
     sender=s;
 }
 
-std::string Message::toString(bool showHeader) {
+
+bool Message::getWasRead() const {
+    return getWasRead();
+}
+
+void Message::setAsRead() {
+    WasRead=true;
+}
+
+std::string Message::toString(bool showHeader) const{
     std::string header= ! showHeader ? ""
             : "|M|["+sendDate+"] "+sender->toString();
     return header+"\n| |\t "+content;
@@ -38,7 +47,8 @@ void Message::prepareToSend() {
     std::strftime(buffer, sizeof(buffer), "%c", lt);
     sendDate= buffer;
 }
-bool Message::sameSender(Message* other) {
+// mettere const
+bool Message::sameSender(Message* other) const{
     if(other == nullptr) return false;
     return this->sender->equals(other->getSender());
 }
