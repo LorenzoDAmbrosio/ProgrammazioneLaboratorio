@@ -6,9 +6,9 @@
 
 //test showMessages
 TEST(Chat, showMessages) {
-    auto* us1=new User("Alice");
-    auto* us2=new User("Bob");
-    auto* us3=new User("Test");
+    User us1("Alice");
+    User us2("Bob");
+    User us3("Test");
 
     Message msg1(us1,"test");
     Message msg2(us3,"test exception");
@@ -16,12 +16,12 @@ TEST(Chat, showMessages) {
     Chat* chat=new Chat(us1,us2);
 
     // La chat se è vuota dovrebbe restituire eccezione
-    ASSERT_ANY_THROW(chat->showMessages());
+    ASSERT_THROW(chat->showMessages(),std::runtime_error);
     // testo se un utente esterno alla chat
     // può inviare un messaggio
-    ASSERT_ANY_THROW(chat->sendMessage(msg2));
+    ASSERT_THROW(chat->sendMessage(msg2),std::runtime_error);
     // la chat continua ad essere vuota
-    ASSERT_ANY_THROW(chat->showMessages());
+    ASSERT_THROW(chat->showMessages(),std::runtime_error);
     // aggiungo un nuovo messaggio, questa volta inerente
     ASSERT_NO_THROW(chat->sendMessage(msg1));
     // riprovo a mostrare i messaggi
@@ -29,19 +29,37 @@ TEST(Chat, showMessages) {
 }
 //test SendMessage
 TEST(Chat, SendMessage) {
-    auto* us1=new User("Alice");
-    auto* us2=new User("Bob");
+    User us1("Alice");
+    User us2("Bob");
 
     Message msg1(us1,"test");
+
+    Chat chat(us1,us2);
+
+    ASSERT_NO_THROW(chat.init());
+
+    ASSERT_NO_THROW(chat.sendMessage(msg1));
+
+    ASSERT_EQ(1,chat.getTotalMessages());
+    Message lastMsg=chat.getLastMessage();
+    
+    ASSERT_EQ(us1, lastMsg.getSender());
+    ASSERT_NE(us2, lastMsg.getSender());
+}
+//test ReadMessages
+TEST(Chat, ReadMessages) {
+    User us1("Alice");
+    User us2("Bob");
+
+    Message msg1(us1,"test lettura");
 
 
     Chat* chat=new Chat(us1,us2);
 
-
     ASSERT_NO_THROW(chat->sendMessage(msg1));
-    ASSERT_EQ(1,chat->getTotalMessages());
-    Message latestMsg=chat->getMessages().back();
-    ASSERT_EQ(msg1,latestMsg);
-    ASSERT_EQ(us1,latestMsg.getSender());
-    ASSERT_NE(us2,latestMsg.getSender());
+    ASSERT_EQ(0,chat->getReadMessages());
+    ASSERT_NE(1,chat->getReadMessages());
+
+    ASSERT_NO_THROW(chat->showMessages());
+    ASSERT_EQ(1, chat->getReadMessages());
 }

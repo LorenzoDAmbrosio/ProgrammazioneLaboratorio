@@ -6,20 +6,23 @@
 #include "Chat.h"
 
 // Costruttore della classe Chat
-Chat::Chat(User* fUser,User* sUser)
+Chat::Chat(User fUser,User sUser)
 : firstUser(fUser), secondUser(sUser)
 {
-    attach(fUser);
-    attach(sUser);
+}
+
+void Chat::init(){
+    attach(&firstUser);
+    attach(&secondUser);
 }
 
 // Implementazione del metodo GETTER per la proprietà firstUser
-User* Chat::getFirstUser() const {
+User Chat::getFirstUser() const {
     return firstUser;
 }
 
 // Implementazione del metodo GETTER per la proprietà secondUser
-User* Chat::getSecondUser() const {
+User Chat::getSecondUser() const {
     return secondUser;
 }
 
@@ -40,15 +43,16 @@ void Chat::notify() {
         observer->update(this);
     }
 }
-
-void Chat::showMessages() const{
+// Print in console the messages that was received
+// and then mark them as read
+void Chat::showMessages(){
     if(messages.empty()){
         throw std::runtime_error("No messages to Display!");
     }
 
     std::cout << toString(false) << "@@@@@@@@@@@@@@@@@@@@@@@@";
     Message* last = nullptr;
-    for (auto message : messages) {
+    for (auto& message : messages) {
         bool differentToLatest=!message.sameSender(last);
         if(differentToLatest)
             std::cout<< std::endl;
@@ -64,14 +68,14 @@ int Chat::getTotalMessages() const {
 }
 
 bool Chat::equals(const Chat &other) const {
-    return this->firstUser->equals(other.getFirstUser()) &&
-           this->secondUser->equals(other.getSecondUser());
+    return this->firstUser.equals(other.getFirstUser()) &&
+           this->secondUser.equals(other.getSecondUser());
 }
 
 std::string Chat::toString(bool tabulation) const {
     std::string tabulationText= !tabulation ? "" : "\t\t";
-    return "|C|"+tabulationText+firstUser->getUsername()
-    + " => "+secondUser->getUsername()
+    return "|C|"+tabulationText+firstUser.getUsername()
+    + " => "+secondUser.getUsername()
     + " \t [no." + std::to_string(getTotalMessages()) + "]";
 }
 
@@ -81,22 +85,22 @@ bool Chat::userIn(const User& user) const{
 }
 
 Chat::~Chat() {
-    detach(firstUser);
-    detach(secondUser);
-    std::cout << "Chat con @" << secondUser->getUsername() << " eliminata" << std::endl;
+    detach(&firstUser);
+    detach(&secondUser);
+    std::cout << "Chat con @" << secondUser.getUsername() << " eliminata" << std::endl;
 }
 
 
 void Chat::sendMessage(Message message){
     auto sender=message.getSender();
-    if(!sender->equals(firstUser) && !sender->equals(secondUser))
+    if(!sender.equals(firstUser) && !sender.equals(secondUser))
         throw std::runtime_error("User not in chat!");
 
     message.prepareToSend();
     messages.push_back(message);
     notify();
 }
-void Chat::sendMessage(User* sender,const std::string &content){
+void Chat::sendMessage(User sender,const std::string &content){
     Message message(sender,content);
     sendMessage(message);
 }
@@ -117,8 +121,9 @@ Message Chat::getLastMessage() const{
 
 int Chat::getReadMessages() const {
     int count=0;
-    for (auto message : messages) {
-        count += message.getWasRead();
+    for (const auto& message : messages) {
+        if(message.getWasRead())
+            count ++ ;
     }
     return count;
 }

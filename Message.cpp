@@ -3,9 +3,10 @@
 //
 
 #include <chrono>
+#include <utility>
 #include "Message.h"
 
-Message::Message(User* sender,const std::string &content)
+Message::Message(User sender,const std::string &content)
 : sender(sender), content(content){
     sendDate = "undefined";
 }
@@ -17,17 +18,17 @@ std::string Message::getContent() const{
 void Message::setContent(const std::string &c){
     content=c;
 }
-User* Message::getSender() const{
+User Message::getSender() const{
     return sender;
 }
 
-void Message::setSender(User* s){
+void Message::setSender(User s){
     sender=s;
 }
 
 
 bool Message::getWasRead() const {
-    return getWasRead();
+    return WasRead;
 }
 
 void Message::setAsRead() {
@@ -36,7 +37,7 @@ void Message::setAsRead() {
 
 std::string Message::toString(bool showHeader) const{
     std::string header= ! showHeader ? ""
-            : "|M|["+sendDate+"] "+sender->toString();
+            : "|M|["+sendDate+"] "+sender.toString();
     return header+"\n| |\t "+content;
 }
 
@@ -47,8 +48,8 @@ void Message::prepareToSend() {
     std::strftime(buffer, sizeof(buffer), "%c", lt);
     sendDate= buffer;
 }
-// mettere const
+
 bool Message::sameSender(Message* other) const{
     if(other == nullptr) return false;
-    return this->sender->equals(other->getSender());
+    return this->sender.equals(other->getSender());
 }

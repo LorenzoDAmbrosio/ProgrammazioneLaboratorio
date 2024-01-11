@@ -13,11 +13,11 @@ class Message {
     private:
         std::string content;
         std::string sendDate;
-        User* sender;
+        User sender;
         bool WasRead = false;
     public:
 
-        Message(User* sender,const std::string &content);
+        Message(User sender,const std::string& content);
 
         //GETTER Content Method :
         // returns the value of property Content
@@ -28,10 +28,10 @@ class Message {
 
         //GETTER Sender Method :
         // returns the value of property Sender
-        User* getSender() const;
+        User getSender() const;
         //SETTER Sender Method :
         // sets the property Sender
-        void setSender(User* s);
+        void setSender(User s);
 
         //GETTER Sender Method :
         // returns the value of property Sender
