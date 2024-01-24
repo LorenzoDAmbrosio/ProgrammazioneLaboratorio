@@ -13,19 +13,19 @@ TEST(Chat, showMessages) {
     Message msg1(us1,"test");
     Message msg2(us3,"test exception");
 
-    Chat* chat=new Chat(us1,us2);
+    Chat chat(us1,us2);
 
     // La chat se è vuota dovrebbe restituire eccezione
-    ASSERT_THROW(chat->showMessages(),std::runtime_error);
+    ASSERT_THROW(chat.showMessages(),std::runtime_error);
     // testo se un utente esterno alla chat
     // può inviare un messaggio
-    ASSERT_THROW(chat->sendMessage(msg2),std::runtime_error);
+    ASSERT_THROW(chat.sendMessage(msg2),std::runtime_error);
     // la chat continua ad essere vuota
-    ASSERT_THROW(chat->showMessages(),std::runtime_error);
+    ASSERT_THROW(chat.showMessages(),std::runtime_error);
     // aggiungo un nuovo messaggio, questa volta inerente
-    ASSERT_NO_THROW(chat->sendMessage(msg1));
+    ASSERT_NO_THROW(chat.sendMessage(msg1));
     // riprovo a mostrare i messaggi
-    ASSERT_NO_THROW(chat->showMessages());
+    ASSERT_NO_THROW(chat.showMessages());
 }
 //test SendMessage
 TEST(Chat, SendMessage) {
@@ -54,12 +54,14 @@ TEST(Chat, ReadMessages) {
     Message msg1(us1,"test lettura");
 
 
-    Chat* chat=new Chat(us1,us2);
+    Chat chat(us1,us2);
 
-    ASSERT_NO_THROW(chat->sendMessage(msg1));
-    ASSERT_EQ(0,chat->getReadMessages());
-    ASSERT_NE(1,chat->getReadMessages());
-
-    ASSERT_NO_THROW(chat->showMessages());
-    ASSERT_EQ(1, chat->getReadMessages());
+    // verifico che l'invio del messaggio non dia errori
+    ASSERT_NO_THROW(chat.sendMessage(msg1));
+    // verifico che i messaggi ricevuti siano non letti
+    ASSERT_EQ(0,chat.getReadMessages());
+    ASSERT_NE(1,chat.getReadMessages());
+    // applico la lettura della chat e verifico che il messaggio sia stato letto
+    ASSERT_NO_THROW(chat.showMessages());
+    ASSERT_EQ(1, chat.getReadMessages());
 }
