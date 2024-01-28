@@ -21,7 +21,7 @@ class ChatRegister
 
         void addChat(Chat* c);
         bool deleteChat(const Chat &c);
-        void ShowChats();
+        void showChats() const;
 };
 
 

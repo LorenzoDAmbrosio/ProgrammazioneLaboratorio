@@ -29,7 +29,7 @@ bool ChatRegister::deleteChat(const Chat &c) {
     return found;
 }
 
-void ChatRegister::ShowChats() {
+void ChatRegister::showChats() const{
     std::cout << "|R|" << title << " "<<"[no."<<chats.size()<<"]"<< "@@@@@@@@@@@@@@@@@@@@@@@@" <<  std::endl;
     for(auto chat : chats)
     {
